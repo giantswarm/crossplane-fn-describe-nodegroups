@@ -11,7 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.43
 	github.com/aws/aws-sdk-go-v2/service/autoscaling v1.31.0
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.126.0
-	github.com/aws/aws-sdk-go-v2/service/eks v1.29.7
+	github.com/aws/aws-sdk-go-v2/service/eks v1.30.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.23.2
 	github.com/crossplane/crossplane-runtime v1.14.0-rc.1
 	github.com/crossplane/function-sdk-go v0.0.0-20231025232119-086e9dd89762
