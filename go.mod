@@ -13,8 +13,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.126.0
 	github.com/aws/aws-sdk-go-v2/service/eks v1.29.7
 	github.com/aws/aws-sdk-go-v2/service/sts v1.23.2
-	github.com/crossplane/crossplane-runtime v1.13.0
-	github.com/crossplane/function-sdk-go v0.0.0-20231023102131-36bee0c36ab8
+	github.com/crossplane/crossplane-runtime v1.14.0-rc.1
+	github.com/crossplane/function-sdk-go v0.0.0-20231025232119-086e9dd89762
 	github.com/crossplane/function-template-go v0.0.0-20230930023403-40dc198e7a6c
 	github.com/google/go-cmp v0.6.0
 	google.golang.org/protobuf v1.31.0
@@ -73,13 +73,13 @@ require (
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.10.1 // indirect
-	github.com/spf13/afero v1.9.5 // indirect
+	github.com/spf13/afero v1.10.0 // indirect
 	github.com/spf13/cobra v1.7.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
-	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/mod v0.13.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.11.0 // indirect
@@ -104,5 +104,5 @@ require (
 	sigs.k8s.io/cluster-api v1.5.2 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
-	sigs.k8s.io/yaml v1.3.0 // indirect
+	sigs.k8s.io/yaml v1.4.0 // indirect
 )
