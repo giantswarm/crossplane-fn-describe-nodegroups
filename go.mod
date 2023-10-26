@@ -15,7 +15,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.23.2
 	github.com/crossplane/crossplane-runtime v1.14.0-rc.1
 	github.com/crossplane/function-sdk-go v0.0.0-20231025232119-086e9dd89762
-	github.com/crossplane/function-template-go v0.0.0-20230930023403-40dc198e7a6c
+	github.com/crossplane/function-template-go v0.0.0-20231026182351-91a1a5eed219
 	github.com/google/go-cmp v0.6.0
 	google.golang.org/protobuf v1.31.0
 	k8s.io/apimachinery v0.28.3
