@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -18,6 +17,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	infrav2 "sigs.k8s.io/cluster-api-provider-aws/v2/api/v1beta2"
 	expinfrav2 "sigs.k8s.io/cluster-api-provider-aws/v2/exp/api/v1beta2"
 )
@@ -69,13 +69,7 @@ func GetAutoScalingGroups(c context.Context, api AutoscalingAPI, input *asg.Desc
 	return api.DescribeAutoScalingGroups(c, input)
 }
 
-// Just a crappy json print for now
-func print(object any) {
-	b, _ := json.MarshalIndent(object, "", "    ")
-	fmt.Println(string(b))
-}
-
-func (f *Function) CreateNodegroupSpec(cluster, namespace, region, assumeRoleArn string, labels, annotations map[string]string) (err error) {
+func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRoleArn string, labels, annotations map[string]string) (err error) {
 	var (
 		ctx       context.Context = context.TODO()
 		res       *eks.ListNodegroupsOutput
@@ -157,11 +151,18 @@ func (f *Function) CreateNodegroupSpec(cluster, namespace, region, assumeRoleArn
 			},
 		}
 
-		if err = f.composed.AddDesired(awsmmp); err != nil {
+		var object *unstructured.Unstructured
+		if object, err = f.composed.ToUnstructuredKubernetesObject(awsmmp); err != nil {
+			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, cluster), "error was", err)
+			continue
+		}
+
+		if err = f.composed.AddDesired(nodegroupName, object); err != nil {
 			f.log.Info(composedName, "add machinepool", errors.Wrap(err, "cannot add composed object "+nodegroupName))
+			continue
 		}
 	}
-	return
+	return nil
 }
 
 // Pull all the information together to create a AWSManagedMachinePool object

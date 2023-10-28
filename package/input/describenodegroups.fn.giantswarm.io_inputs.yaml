@@ -33,6 +33,16 @@ spec:
             type: string
           metadata:
             type: object
+          spec:
+            description: Defines the spec for this input
+            properties:
+              clusterRef:
+                description: ClusterRef The XR name of the cluster resource that will
+                  be created. This is not the same as `clusterName`.
+                type: string
+            required:
+            - clusterRef
+            type: object
         type: object
     served: true
     storage: true

@@ -2,19 +2,19 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	clientconfig "sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
-func getKubeClient() (c client.Client, err error) {
+func (f *Function) getKubeClient() (c client.Client, err error) {
 	var config *rest.Config
 
-	if config, err = rest.InClusterConfig(); err != nil {
+	if config, err = clientconfig.GetConfig(); err != nil {
 		err = errors.Wrap(err, "cannot get cluster config")
 		return
 	}
@@ -22,6 +22,7 @@ func getKubeClient() (c client.Client, err error) {
 	if c, err = client.New(config, client.Options{}); err != nil {
 		err = errors.Wrap(err, "failed to create cluster client")
 	}
+
 	return
 }
 
@@ -30,7 +31,7 @@ func (f *Function) getAssumeRoleArn() (arn string, err error) {
 		unstructuredData *unstructured.Unstructured = &unstructured.Unstructured{}
 		cl               client.Client
 	)
-	if cl, err = getKubeClient(); err != nil {
+	if cl, err = f.getKubeClient(); err != nil {
 		err = errors.Wrap(err, "error setting up kubernetes client")
 		return
 	}
@@ -55,7 +56,7 @@ func (f *Function) getAssumeRoleArn() (arn string, err error) {
 	}
 
 	var spec _spec
-	if err = toObject(unstructuredData.Object["spec"], &spec); err != nil {
+	if err = f.composed.To(unstructuredData.Object["spec"], &spec); err != nil {
 		err = errors.Wrapf(err, "unable to decode provider config")
 		return
 	}
@@ -64,15 +65,5 @@ func (f *Function) getAssumeRoleArn() (arn string, err error) {
 
 	// We only care about the first in the chain here.
 	arn = spec.AssumeRoleChain[0].RoleARN
-	return
-}
-
-func toObject(resource any, jsonObject any) (err error) {
-	var b []byte
-	if b, err = json.Marshal(resource); err != nil {
-		return
-	}
-
-	err = json.Unmarshal(b, jsonObject)
 	return
 }

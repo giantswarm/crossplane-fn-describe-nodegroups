@@ -32,14 +32,21 @@ type EksImportXRObject struct {
 type XRSpec struct {
 	KubernetesAdditionalLabels  map[string]string `json:"kubernetesAdditionalLabels"`
 	Labels                      map[string]string `json:"labels"`
-	AwsProviderConfigRef        string            `json:"awsProviderConfigRef"`
+	AwsProviderConfigRef        string            `json:"cloudProviderConfigRef"`
 	ClusterName                 string            `json:"clusterName"`
 	DeletionPolicy              string            `json:"deletionPolicy"`
-	KubernetesProviderConfigRef string            `json:"kubernetesProviderConfigRef"`
-	Region                      string            `json:"region"`
+	KubernetesProviderConfigRef string            `json:"clusterProviderConfigRef"`
+	Region                      string            `json:"regionOrLocation"`
+	ResourceGroupName           string            `json:"resourceGroupName,omitempty"`
 	ClaimRef                    struct {
 		Namespace string `json:"namespace"`
 	} `json:"claimRef"`
+
+	CompositionSelector struct {
+		MatchLabels struct {
+			Provider string `json:"provider"`
+		} `json:"matchLabels"`
+	} `json:"compositionSelector"`
 }
 
 type XRStatus struct {
@@ -51,4 +58,10 @@ type Function struct {
 	fnv1beta1.UnimplementedFunctionRunnerServiceServer
 	log      logging.Logger
 	composed *Composition
+}
+
+type WaitingForSpec struct{}
+
+func (w *WaitingForSpec) Error() string {
+	return "spec is empty or undefined"
 }

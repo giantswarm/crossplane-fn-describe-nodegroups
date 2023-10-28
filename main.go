@@ -3,8 +3,11 @@ package main
 
 import (
 	"github.com/alecthomas/kong"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	"github.com/crossplane/function-sdk-go"
+	"github.com/crossplane/function-sdk-go/logging"
+	ctrl "sigs.k8s.io/controller-runtime"
 )
 
 // CLI of this Function.
@@ -19,10 +22,9 @@ type CLI struct {
 
 // Run this Function.
 func (c *CLI) Run() error {
-	log, err := function.NewLogger(c.Debug)
-	if err != nil {
-		return err
-	}
+	zl := zap.New(zap.UseDevMode(c.Debug))
+	log := logging.NewLogrLogger(zl.WithName(composedName))
+	ctrl.SetLogger(zl)
 
 	return function.Serve(&Function{log: log},
 		function.Listen(c.Network, c.Address),
