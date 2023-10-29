@@ -27,10 +27,10 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 	}
 
 	var (
-		clusterName string = f.composed.ObservedComposite.Spec.ClusterName
-		namespace   string = f.composed.ObservedComposite.Spec.ClaimRef.Namespace
-		region      string = f.composed.ObservedComposite.Spec.Region
-		provider    string = f.composed.ObservedComposite.Spec.CompositionSelector.MatchLabels.Provider
+		clusterName *string = &f.composed.ObservedComposite.Spec.ClusterName
+		namespace   *string = &f.composed.ObservedComposite.Spec.ClaimRef.Namespace
+		region      *string = &f.composed.ObservedComposite.Spec.Region
+		provider    *string = &f.composed.ObservedComposite.Spec.CompositionSelector.MatchLabels.Provider
 
 		labels      map[string]string = f.composed.ObservedComposite.Metadata.Labels
 		annotations map[string]string = map[string]string{
@@ -43,10 +43,10 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		labels[k] = v
 	}
 
-	switch strings.ToLower(provider) {
+	switch strings.ToLower(*provider) {
 	case "aws":
 		f.log.Info("discovered aws provider", composedName, req.GetMeta().GetTag())
-		var arn string
+		var arn *string
 		if arn, err = f.getAssumeRoleArn(); err != nil {
 			response.Fatal(rsp, errors.Wrap(err, "error retrieving provider assume role arn "+composedName))
 			return rsp, nil

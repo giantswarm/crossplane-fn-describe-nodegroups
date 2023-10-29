@@ -69,7 +69,7 @@ func GetAutoScalingGroups(c context.Context, api AutoscalingAPI, input *asg.Desc
 	return api.DescribeAutoScalingGroups(c, input)
 }
 
-func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRoleArn string, labels, annotations map[string]string) (err error) {
+func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRoleArn *string, labels, annotations map[string]string) (err error) {
 	var (
 		ctx       context.Context = context.TODO()
 		res       *eks.ListNodegroupsOutput
@@ -78,7 +78,7 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRole
 
 	// Set up the assume role clients
 	if acfg, err = config.LoadDefaultConfig(
-		ctx, config.WithRegion(region),
+		ctx, config.WithRegion(*region),
 	); err != nil {
 		err = errors.Wrap(err, "failed to load initial aws config")
 		return
@@ -87,11 +87,11 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRole
 
 	if cfg, err = config.LoadDefaultConfig(
 		ctx,
-		config.WithRegion(region),
+		config.WithRegion(*region),
 		config.WithCredentialsProvider(aws.NewCredentialsCache(
 			stscredsv2.NewAssumeRoleProvider(
 				stsclient,
-				assumeRoleArn,
+				*assumeRoleArn,
 			)),
 		),
 	); err != nil {
@@ -105,32 +105,32 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRole
 	// end setting up clients
 
 	clusterInput := &eks.ListNodegroupsInput{
-		ClusterName: &cluster,
+		ClusterName: cluster,
 	}
 
 	if res, err = GetNodegroups(context.TODO(), eksclient, clusterInput); err != nil {
-		err = errors.Wrap(err, fmt.Sprintf("failed to load nodegroups for cluster %q", cluster))
+		err = errors.Wrap(err, fmt.Sprintf("failed to load nodegroups for cluster %q", *cluster))
 		return
 	}
 
 	for _, nodegroup := range res.Nodegroups {
 		nodegroupInput := &eks.DescribeNodegroupInput{
-			ClusterName:   &cluster,
+			ClusterName:   cluster,
 			NodegroupName: &nodegroup,
 		}
 		var group *eks.DescribeNodegroupOutput
 		if group, err = DescribeNodegroup(context.TODO(), eksclient, nodegroupInput); err != nil {
-			f.log.Debug(fmt.Sprintf("cannot describe nodegroup %s for cluster %s", nodegroup, cluster), "error was", err)
+			f.log.Debug(fmt.Sprintf("cannot describe nodegroup %s for cluster %s", nodegroup, *cluster), "error was", err)
 			continue
 		}
 
 		var ng *expinfrav2.AWSManagedMachinePoolSpec
 		if ng, err = f.nodegroupToCapiObject(group.Nodegroup, ec2client, asgclient); err != nil {
-			f.log.Debug(fmt.Sprintf("cannot create nodegroup object for nodegroup %q in cluster %q", nodegroup, cluster), "error was", err)
+			f.log.Debug(fmt.Sprintf("cannot create nodegroup object for nodegroup %q in cluster %q", nodegroup, *cluster), "error was", err)
 			continue
 		}
 
-		var nodegroupName string = fmt.Sprintf("%s-%s", cluster, nodegroup)
+		var nodegroupName string = fmt.Sprintf("%s-%s", *cluster, nodegroup)
 		var awsmmp *expinfrav2.AWSManagedMachinePool = &expinfrav2.AWSManagedMachinePool{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "AWSManagedMachinePool",
@@ -138,7 +138,7 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRole
 			},
 			ObjectMeta: metav1.ObjectMeta{
 				Name:        nodegroupName,
-				Namespace:   namespace,
+				Namespace:   *namespace,
 				Labels:      labels,
 				Annotations: annotations,
 			},
@@ -153,7 +153,7 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRole
 
 		var object *unstructured.Unstructured
 		if object, err = f.composed.ToUnstructuredKubernetesObject(awsmmp); err != nil {
-			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, cluster), "error was", err)
+			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *cluster), "error was", err)
 			continue
 		}
 

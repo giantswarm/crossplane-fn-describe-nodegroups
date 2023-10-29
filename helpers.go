@@ -26,7 +26,7 @@ func (f *Function) getKubeClient() (c client.Client, err error) {
 	return
 }
 
-func (f *Function) getAssumeRoleArn() (arn string, err error) {
+func (f *Function) getAssumeRoleArn() (arn *string, err error) {
 	var (
 		unstructuredData *unstructured.Unstructured = &unstructured.Unstructured{}
 		cl               client.Client
@@ -64,6 +64,6 @@ func (f *Function) getAssumeRoleArn() (arn string, err error) {
 	f.log.Debug(composedName, "unstructured is", spec)
 
 	// We only care about the first in the chain here.
-	arn = spec.AssumeRoleChain[0].RoleARN
+	arn = &spec.AssumeRoleChain[0].RoleARN
 	return
 }
