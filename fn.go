@@ -19,13 +19,8 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 	rsp = response.To(req, response.DefaultTTL)
 
 	input := v1beta1.Input{}
-	if f.composed, err = composite.New(req, &input); err != nil {
+	if f.composed, err = composite.New(req, &input, &f.composite); err != nil {
 		response.Fatal(rsp, errors.Wrap(err, "error setting up function "+composedName))
-		return rsp, nil
-	}
-
-	if err = composite.To(f.composed.ObservedComposite, &f.composite); err != nil {
-		response.Fatal(rsp, errors.Wrap(err, "error converting composite object"))
 		return rsp, nil
 	}
 
@@ -47,6 +42,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		labels[k] = v
 	}
 
+	f.log.Info(*provider)
 	switch strings.ToLower(*provider) {
 	case "aws":
 		f.log.Info("discovered aws provider", composedName, req.GetMeta().GetTag())
