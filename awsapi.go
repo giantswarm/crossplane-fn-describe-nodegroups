@@ -6,16 +6,15 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	stscredsv2 "github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	asg "github.com/aws/aws-sdk-go-v2/service/autoscaling"
 	asgtypes "github.com/aws/aws-sdk-go-v2/service/autoscaling/types"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	ec2types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/aws/aws-sdk-go-v2/service/eks"
 	"github.com/aws/aws-sdk-go-v2/service/eks/types"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
+	xfnaws "github.com/giantswarm/xfnlib/pkg/auth/aws"
+	"github.com/giantswarm/xfnlib/pkg/composite"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	infrav2 "sigs.k8s.io/cluster-api-provider-aws/v2/api/v1beta2"
@@ -69,32 +68,14 @@ func GetAutoScalingGroups(c context.Context, api AutoscalingAPI, input *asg.Desc
 	return api.DescribeAutoScalingGroups(c, input)
 }
 
-func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRoleArn *string, labels, annotations map[string]string) (err error) {
+func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerConfig *string, labels, annotations map[string]string) (err error) {
 	var (
-		ctx       context.Context = context.TODO()
-		res       *eks.ListNodegroupsOutput
-		acfg, cfg aws.Config
+		res *eks.ListNodegroupsOutput
+		cfg aws.Config
 	)
 
 	// Set up the assume role clients
-	if acfg, err = config.LoadDefaultConfig(
-		ctx, config.WithRegion(*region),
-	); err != nil {
-		err = errors.Wrap(err, "failed to load initial aws config")
-		return
-	}
-	stsclient := sts.NewFromConfig(acfg)
-
-	if cfg, err = config.LoadDefaultConfig(
-		ctx,
-		config.WithRegion(*region),
-		config.WithCredentialsProvider(aws.NewCredentialsCache(
-			stscredsv2.NewAssumeRoleProvider(
-				stsclient,
-				*assumeRoleArn,
-			)),
-		),
-	); err != nil {
+	if cfg, err = xfnaws.Config(region, providerConfig); err != nil {
 		err = errors.Wrap(err, "failed to load aws config for assume role")
 		return
 	}
@@ -152,7 +133,7 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, assumeRole
 		}
 
 		var object *unstructured.Unstructured
-		if object, err = f.composed.ToUnstructuredKubernetesObject(awsmmp); err != nil {
+		if object, err = composite.ToUnstructuredKubernetesObject(awsmmp, f.composite.Spec.KubernetesProviderConfigRef); err != nil {
 			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *cluster), "error was", err)
 			continue
 		}

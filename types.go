@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/crossplane/crossplane-runtime/pkg/logging"
 	fnv1beta1 "github.com/crossplane/function-sdk-go/proto/v1beta1"
+	"github.com/giantswarm/xfnlib/pkg/composite"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -56,12 +57,7 @@ type XRStatus struct {
 // Function returns whatever response you ask it to.
 type Function struct {
 	fnv1beta1.UnimplementedFunctionRunnerServiceServer
-	log      logging.Logger
-	composed *Composition
-}
-
-type WaitingForSpec struct{}
-
-func (w *WaitingForSpec) Error() string {
-	return "spec is empty or undefined"
+	log       logging.Logger
+	composed  *composite.Composition
+	composite EksImportXRObject
 }

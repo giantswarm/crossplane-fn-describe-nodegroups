@@ -7,15 +7,13 @@ replace k8s.io/client-go => k8s.io/client-go v0.28.3
 require (
 	github.com/alecthomas/kong v0.8.1
 	github.com/aws/aws-sdk-go-v2 v1.21.2
-	github.com/aws/aws-sdk-go-v2/config v1.19.0
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.43
 	github.com/aws/aws-sdk-go-v2/service/autoscaling v1.31.0
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.126.0
 	github.com/aws/aws-sdk-go-v2/service/eks v1.29.7
-	github.com/aws/aws-sdk-go-v2/service/sts v1.23.2
 	github.com/crossplane/crossplane-runtime v1.14.0-rc.1
-	github.com/crossplane/function-sdk-go v0.0.0-20231025232119-086e9dd89762
+	github.com/crossplane/function-sdk-go v0.0.0-20231027134439-0745c2a72577
 	github.com/crossplane/function-template-go v0.0.0-20230930023403-40dc198e7a6c
+	github.com/giantswarm/xfnlib v0.0.0-20231030124859-4b8e8c34328d
 	github.com/google/go-cmp v0.6.0
 	google.golang.org/protobuf v1.31.0
 	k8s.io/apimachinery v0.28.3
@@ -27,6 +25,8 @@ require (
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.19.1 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.43 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.13 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.43 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.37 // indirect
@@ -34,6 +34,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.37 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.15.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.17.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.23.2 // indirect
 	github.com/aws/smithy-go v1.15.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect

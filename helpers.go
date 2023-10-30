@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
+	"github.com/giantswarm/xfnlib/pkg/composite"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
@@ -11,7 +12,7 @@ import (
 	clientconfig "sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
-func (f *Function) getKubeClient() (c client.Client, err error) {
+func GetKubeClient() (c client.Client, err error) {
 	var config *rest.Config
 
 	if config, err = clientconfig.GetConfig(); err != nil {
@@ -26,12 +27,12 @@ func (f *Function) getKubeClient() (c client.Client, err error) {
 	return
 }
 
-func (f *Function) getAssumeRoleArn() (arn *string, err error) {
+func GetAssumeRoleArn(providerConfigRef *string) (arn *string, err error) {
 	var (
 		unstructuredData *unstructured.Unstructured = &unstructured.Unstructured{}
 		cl               client.Client
 	)
-	if cl, err = f.getKubeClient(); err != nil {
+	if cl, err = GetKubeClient(); err != nil {
 		err = errors.Wrap(err, "error setting up kubernetes client")
 		return
 	}
@@ -43,7 +44,7 @@ func (f *Function) getAssumeRoleArn() (arn *string, err error) {
 	})
 
 	if err = cl.Get(context.Background(), client.ObjectKey{
-		Name: f.composed.ObservedComposite.Spec.AwsProviderConfigRef,
+		Name: *providerConfigRef,
 	}, unstructuredData); err != nil {
 		err = errors.Wrap(err, "failed to load providerconfig")
 		return
@@ -56,12 +57,10 @@ func (f *Function) getAssumeRoleArn() (arn *string, err error) {
 	}
 
 	var spec _spec
-	if err = f.composed.To(unstructuredData.Object["spec"], &spec); err != nil {
+	if err = composite.To(unstructuredData.Object["spec"], &spec); err != nil {
 		err = errors.Wrapf(err, "unable to decode provider config")
 		return
 	}
-
-	f.log.Debug(composedName, "unstructured is", spec)
 
 	// We only care about the first in the chain here.
 	arn = &spec.AssumeRoleChain[0].RoleARN
