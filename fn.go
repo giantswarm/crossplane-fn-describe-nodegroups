@@ -7,7 +7,7 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
 	fnv1beta1 "github.com/crossplane/function-sdk-go/proto/v1beta1"
 	"github.com/crossplane/function-sdk-go/response"
-	"github.com/giantswarm/function-describe-nodegroups/input/v1beta1"
+	"github.com/giantswarm/crossplane-fn-describe-nodegroups/input/v1beta1"
 	"github.com/giantswarm/xfnlib/pkg/composite"
 )
 
@@ -21,6 +21,11 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 	input := v1beta1.Input{}
 	if f.composed, err = composite.New(req, &input, &f.composite); err != nil {
 		response.Fatal(rsp, errors.Wrap(err, "error setting up function "+composedName))
+		return rsp, nil
+	}
+
+	if _, ok := f.composed.ObservedComposed[input.Spec.ClusterRef]; !ok {
+		response.Normal(rsp, "Waiting for resource")
 		return rsp, nil
 	}
 

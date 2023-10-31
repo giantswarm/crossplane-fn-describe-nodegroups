@@ -1,4 +1,4 @@
-module github.com/giantswarm/function-describe-nodegroups
+module github.com/giantswarm/crossplane-fn-describe-nodegroups
 
 go 1.20
 

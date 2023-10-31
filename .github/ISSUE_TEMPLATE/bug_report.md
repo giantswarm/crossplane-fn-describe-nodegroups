@@ -3,20 +3,12 @@ name: Bug Report
 about: Help us diagnose and fix bugs in this Function
 labels: bug
 ---
-<!--
-Thank you for helping to improve Crossplane!
-
-Please be sure to search for open issues before raising a new one. We use issues
-for bug reports and feature requests. Please find us at https://slack.crossplane.io
-for questions, support, and discussion.
--->
 
 ### What happened?
 <!--
 Please let us know what behaviour you expected and how this Function diverged
 from that behaviour.
 -->
-
 
 ### How can we reproduce it?
 <!--

@@ -1,30 +1,27 @@
-<!--
-Thank you for helping to improve Crossplane!
+### What does this PR do?
 
-Please read through https://git.io/fj2m9 if this is your first time opening a
-Crossplane pull request. Find us in https://slack.crossplane.io/messages/dev if
-you need any help contributing.
--->
+(Please set a descriptive PR title. Use this space for additional explanations.)
 
-### Description of your changes
+### What is the effect of this change to users?
 
-<!--
-Briefly describe what this pull request does, and how it is covered by tests.
-Be proactive - direct your reviewers' attention to anything that needs special
-consideration.
+### How does it look like?
 
-You MUST either [x] check or ~strikethrough~ every item in the checklist below.
+(Please add anything that represents the change visually. Screenshots, output, logs, ...)
 
-We love pull requests that fix an open issue. If yours does, use the below line
-to indicate which issue it fixes, for example "Fixes #500".
--->
+### Any background context you can provide?
 
-Fixes # 
+(Please link public issues or summarize if not public.)
 
-I have:
+### What is needed from the reviewers?
 
-- [ ] Read and followed Crossplane's [contribution process].
-- [ ] Added or updated unit tests for my change.
+### Do the docs need to be updated?
 
-[contribution process]: https://git.io/fj2m9
-[docs]: https://docs.crossplane.io/contribute/contribute
+### Should this change be mentioned in the release notes?
+
+- [ ] CHANGELOG.md has been updated (if it exists)
+
+### If this is an initial PR, check the following:
+
+- [ ] I have updated the function name in `go.mod`
+- [ ] I have set the `kubeBuilder` flags to reflect my function name in `input/v1beta1/input.go`
+- [ ] I have set `composedName` in `fn.go` to reflect my function name
