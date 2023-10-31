@@ -11,7 +11,7 @@ import (
 	"github.com/giantswarm/xfnlib/pkg/composite"
 )
 
-const composedName = "function-describe-nodegroups"
+const composedName = "crossplane-fn-describe-nodegroups"
 
 // RunFunction Execute the desired reconcilliation state, creating any required resources
 func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequest) (rsp *fnv1beta1.RunFunctionResponse, err error) {
@@ -34,7 +34,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		namespace         *string = &f.composite.Spec.ClaimRef.Namespace
 		region            *string = &f.composite.Spec.Region
 		provider          *string = &f.composite.Spec.CompositionSelector.MatchLabels.Provider
-		providerConfigRef *string = &f.composite.Spec.AwsProviderConfigRef
+		providerConfigRef *string = &f.composite.Spec.CloudProviderConfigRef
 
 		labels      map[string]string = f.composite.Metadata.Labels
 		annotations map[string]string = map[string]string{
@@ -56,9 +56,9 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 			return rsp, nil
 		}
 	case "azure":
-		break
+		f.log.Info("Azure provider is not yet implemented")
 	case "gcp":
-		break
+		f.log.Info("GCP provider is not yet implemented")
 	}
 
 	if err = f.composed.ToResponse(rsp); err != nil {

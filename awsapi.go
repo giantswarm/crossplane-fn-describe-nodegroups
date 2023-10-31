@@ -133,11 +133,12 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerCo
 		}
 
 		var object *unstructured.Unstructured
-		if object, err = composite.ToUnstructuredKubernetesObject(awsmmp, f.composite.Spec.KubernetesProviderConfigRef); err != nil {
+		if object, err = composite.ToUnstructuredKubernetesObject(awsmmp, f.composite.Spec.ClusterProviderConfigRef); err != nil {
 			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *cluster), "error was", err)
 			continue
 		}
 
+		f.log.Info("Adding nodegroup to required resources", "nodegroup", nodegroupName)
 		if err = f.composed.AddDesired(nodegroupName, object); err != nil {
 			f.log.Info(composedName, "add machinepool", errors.Wrap(err, "cannot add composed object "+nodegroupName))
 			continue

@@ -31,15 +31,15 @@ type EksImportXRObject struct {
 }
 
 type XRSpec struct {
-	KubernetesAdditionalLabels  map[string]string `json:"kubernetesAdditionalLabels"`
-	Labels                      map[string]string `json:"labels"`
-	AwsProviderConfigRef        string            `json:"cloudProviderConfigRef"`
-	ClusterName                 string            `json:"clusterName"`
-	DeletionPolicy              string            `json:"deletionPolicy"`
-	KubernetesProviderConfigRef string            `json:"clusterProviderConfigRef"`
-	Region                      string            `json:"regionOrLocation"`
-	ResourceGroupName           string            `json:"resourceGroupName,omitempty"`
-	ClaimRef                    struct {
+	KubernetesAdditionalLabels map[string]string `json:"kubernetesAdditionalLabels"`
+	Labels                     map[string]string `json:"labels"`
+	CloudProviderConfigRef     string            `json:"cloudProviderConfigRef"`
+	ClusterName                string            `json:"clusterName"`
+	DeletionPolicy             string            `json:"deletionPolicy"`
+	ClusterProviderConfigRef   string            `json:"clusterProviderConfigRef"`
+	Region                     string            `json:"regionOrLocation"`
+	ResourceGroupName          string            `json:"resourceGroupName,omitempty"`
+	ClaimRef                   struct {
 		Namespace string `json:"namespace"`
 	} `json:"claimRef"`
 
