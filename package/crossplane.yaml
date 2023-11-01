@@ -2,7 +2,7 @@
 apiVersion: meta.pkg.crossplane.io/v1beta1
 kind: Function
 metadata:
-  name: function-generate-subnets
+  name: function-describe-nodegroups
 spec:
   dependsOn:
     - version: ">=v0.5.0"

@@ -15,10 +15,12 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
 	xfnaws "github.com/giantswarm/xfnlib/pkg/auth/aws"
 	"github.com/giantswarm/xfnlib/pkg/composite"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	infrav2 "sigs.k8s.io/cluster-api-provider-aws/v2/api/v1beta2"
 	expinfrav2 "sigs.k8s.io/cluster-api-provider-aws/v2/exp/api/v1beta2"
+	capiinfra "sigs.k8s.io/cluster-api/api/v1beta1"
 )
 
 // EKSNodegroupAPI describes the AWS functions required by this composition function
@@ -112,7 +114,7 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerCo
 		}
 
 		var nodegroupName string = fmt.Sprintf("%s-%s", *cluster, nodegroup)
-		var awsmmp *expinfrav2.AWSManagedMachinePool = &expinfrav2.AWSManagedMachinePool{
+		var awsmmp expinfrav2.AWSManagedMachinePool = expinfrav2.AWSManagedMachinePool{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "AWSManagedMachinePool",
 				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta2",
@@ -132,14 +134,57 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerCo
 			},
 		}
 
-		var object *unstructured.Unstructured
-		if object, err = composite.ToUnstructuredKubernetesObject(awsmmp, f.composite.Spec.ClusterProviderConfigRef); err != nil {
+		var dataSecretName string = ""
+		var machinepool *capiinfra.MachineDeployment = &capiinfra.MachineDeployment{
+			TypeMeta: metav1.TypeMeta{
+				Kind:       "MachinePool",
+				APIVersion: "cluster.x-k8s.io/v1beta1",
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Name:        nodegroupName + "-mp",
+				Namespace:   *namespace,
+				Labels:      labels,
+				Annotations: annotations,
+			},
+			Spec: capiinfra.MachineDeploymentSpec{
+				Replicas:    &awsmmp.Status.Replicas,
+				ClusterName: *cluster,
+				Template: capiinfra.MachineTemplateSpec{
+					Spec: capiinfra.MachineSpec{
+						ClusterName: *cluster,
+						Bootstrap: capiinfra.Bootstrap{
+							DataSecretName: &dataSecretName,
+						},
+						InfrastructureRef: v1.ObjectReference{
+							Kind:       "AWSManagedMachinePool",
+							APIVersion: "infrastructure.cluster.x-k8s.io/v1beta2",
+							Namespace:  *namespace,
+							Name:       nodegroupName,
+						},
+					},
+				},
+			},
+		}
+
+		var awsobject, mpobject *unstructured.Unstructured
+		if awsobject, err = composite.ToUnstructuredKubernetesObject(awsmmp, f.composite.Spec.ClusterProviderConfigRef); err != nil {
 			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *cluster), "error was", err)
 			continue
 		}
 
 		f.log.Info("Adding nodegroup to required resources", "nodegroup", nodegroupName)
-		if err = f.composed.AddDesired(nodegroupName, object); err != nil {
+		if err = f.composed.AddDesired(nodegroupName, awsobject); err != nil {
+			f.log.Info(composedName, "add machinepool", errors.Wrap(err, "cannot add composed object "+nodegroupName))
+			continue
+		}
+
+		if mpobject, err = composite.ToUnstructuredKubernetesObject(machinepool, f.composite.Spec.ClusterProviderConfigRef); err != nil {
+			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *cluster), "error was", err)
+			continue
+		}
+
+		f.log.Info("Adding machinepool to required resources", "machinepool", nodegroupName)
+		if err = f.composed.AddDesired(nodegroupName+"-mp", mpobject); err != nil {
 			f.log.Info(composedName, "add machinepool", errors.Wrap(err, "cannot add composed object "+nodegroupName))
 			continue
 		}

@@ -15,6 +15,7 @@
 function-describe-nodegroups
 crossplane-fn-describe-nodegroups
 
+package/*.xpkg
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 

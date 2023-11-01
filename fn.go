@@ -24,6 +24,12 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		return rsp, nil
 	}
 
+	f.log.Info("input spec", "input", input)
+	if input.Spec == nil {
+		response.Normal(rsp, "Waiting for spec")
+		return rsp, nil
+	}
+
 	if _, ok := f.composed.ObservedComposed[input.Spec.ClusterRef]; !ok {
 		response.Normal(rsp, "Waiting for resource")
 		return rsp, nil
