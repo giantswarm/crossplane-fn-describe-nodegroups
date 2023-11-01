@@ -1,6 +1,8 @@
 module github.com/giantswarm/crossplane-fn-describe-nodegroups
 
-go 1.20
+go 1.21
+
+toolchain go1.21.3
 
 replace k8s.io/client-go => k8s.io/client-go v0.28.3
 
@@ -10,8 +12,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/autoscaling v1.31.0
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.126.0
 	github.com/aws/aws-sdk-go-v2/service/eks v1.29.7
-	github.com/crossplane/crossplane-runtime v1.14.0-rc.1
-	github.com/crossplane/function-sdk-go v0.0.0-20231027134439-0745c2a72577
+	github.com/crossplane/crossplane-runtime v1.14.0
+	github.com/crossplane/function-sdk-go v0.1.0
 	github.com/crossplane/function-template-go v0.0.0-20230930023403-40dc198e7a6c
 	github.com/giantswarm/xfnlib v0.0.0-20231101162043-510e773708f8
 	github.com/google/go-cmp v0.6.0
@@ -47,7 +49,8 @@ require (
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-json-experiment/json v0.0.0-20231013223334-54c864be5b8d // indirect
+	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/zapr v1.2.4 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
@@ -102,7 +105,7 @@ require (
 	k8s.io/component-base v0.28.3 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230717233707-2695361300d9 // indirect
-	k8s.io/utils v0.0.0-20230505201702-9f6742963106 // indirect
+	k8s.io/utils v0.0.0-20230726121419-3b25d923346b // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
