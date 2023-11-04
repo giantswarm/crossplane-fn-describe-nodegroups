@@ -4,11 +4,37 @@ orbs:
   architect: giantswarm/architect@4.33.0
 
 workflows:
-  test:
+  build-workflow:
     jobs:
-      - architect/go-test:
-          name: go-test
+      - builddocker:
+          context:
+            - architect
           filters:
-            # Trigger job also on git tag.
             tags:
               only: /^v.*/
+
+jobs:
+  builddocker:
+    machine:
+      image: ubuntu-2204:2023.07.2
+    steps:
+      - checkout
+      - run:
+          name: "Push to docker"
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+            [ -z "${CIRCLE_TAG}" ] && CIRCLE_TAG=v0.0.1-dev
+
+            curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
+
+            docker buildx build . -t docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+
+            echo "triggering : ./crossplane xpkg build -f package --embed-runtime-image=docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
+            ./crossplane xpkg build -f package --embed-runtime-image=docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+
+            cd package
+            ls
+            echo "triggering : ./crossplane xpkg push docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
+            ../crossplane xpkg push docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+
+            echo "Pushed to docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
