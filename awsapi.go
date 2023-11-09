@@ -70,14 +70,14 @@ func GetAutoScalingGroups(c context.Context, api AutoscalingAPI, input *asg.Desc
 	return api.DescribeAutoScalingGroups(c, input)
 }
 
-func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerConfig *string, labels, annotations map[string]string) (err error) {
+func (f *Function) CreateAWSNodegroupSpec(ac *awsconfig) (err error) {
 	var (
 		res *eks.ListNodegroupsOutput
 		cfg aws.Config
 	)
 
 	// Set up the assume role clients
-	if cfg, err = xfnaws.Config(region, providerConfig); err != nil {
+	if cfg, err = xfnaws.Config(ac.region, ac.providerConfigRef); err != nil {
 		err = errors.Wrap(err, "failed to load aws config for assume role")
 		return
 	}
@@ -88,32 +88,32 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerCo
 	// end setting up clients
 
 	clusterInput := &eks.ListNodegroupsInput{
-		ClusterName: cluster,
+		ClusterName: ac.cluster,
 	}
 
 	if res, err = GetNodegroups(context.TODO(), eksclient, clusterInput); err != nil {
-		err = errors.Wrap(err, fmt.Sprintf("failed to load nodegroups for cluster %q", *cluster))
+		err = errors.Wrap(err, fmt.Sprintf("failed to load nodegroups for cluster %q", *ac.cluster))
 		return
 	}
 
 	for _, nodegroup := range res.Nodegroups {
 		nodegroupInput := &eks.DescribeNodegroupInput{
-			ClusterName:   cluster,
+			ClusterName:   ac.cluster,
 			NodegroupName: &nodegroup,
 		}
 		var group *eks.DescribeNodegroupOutput
 		if group, err = DescribeNodegroup(context.TODO(), eksclient, nodegroupInput); err != nil {
-			f.log.Debug(fmt.Sprintf("cannot describe nodegroup %s for cluster %s", nodegroup, *cluster), "error was", err)
+			f.log.Debug(fmt.Sprintf("cannot describe nodegroup %s for cluster %s", nodegroup, *ac.cluster), "error was", err)
 			continue
 		}
 
 		var ng *expinfrav2.AWSManagedMachinePoolSpec
 		if ng, err = f.nodegroupToCapiObject(group.Nodegroup, ec2client, asgclient); err != nil {
-			f.log.Debug(fmt.Sprintf("cannot create nodegroup object for nodegroup %q in cluster %q", nodegroup, *cluster), "error was", err)
+			f.log.Debug(fmt.Sprintf("cannot create nodegroup object for nodegroup %q in cluster %q", nodegroup, *ac.cluster), "error was", err)
 			continue
 		}
 
-		var nodegroupName string = fmt.Sprintf("%s-%s", *cluster, nodegroup)
+		var nodegroupName string = fmt.Sprintf("%s-%s", *ac.cluster, nodegroup)
 		var awsmmp expinfrav2.AWSManagedMachinePool = expinfrav2.AWSManagedMachinePool{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "AWSManagedMachinePool",
@@ -121,9 +121,9 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerCo
 			},
 			ObjectMeta: metav1.ObjectMeta{
 				Name:        nodegroupName,
-				Namespace:   *namespace,
-				Labels:      labels,
-				Annotations: annotations,
+				Namespace:   *ac.namespace,
+				Labels:      ac.labels,
+				Annotations: ac.annotations,
 			},
 			Spec: *ng,
 			Status: expinfrav2.AWSManagedMachinePoolStatus{
@@ -142,23 +142,23 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerCo
 			},
 			ObjectMeta: metav1.ObjectMeta{
 				Name:        nodegroupName + "-mp",
-				Namespace:   *namespace,
-				Labels:      labels,
-				Annotations: annotations,
+				Namespace:   *ac.namespace,
+				Labels:      ac.labels,
+				Annotations: ac.annotations,
 			},
 			Spec: capiinfra.MachineDeploymentSpec{
 				Replicas:    &awsmmp.Status.Replicas,
-				ClusterName: *cluster,
+				ClusterName: *ac.cluster,
 				Template: capiinfra.MachineTemplateSpec{
 					Spec: capiinfra.MachineSpec{
-						ClusterName: *cluster,
+						ClusterName: *ac.cluster,
 						Bootstrap: capiinfra.Bootstrap{
 							DataSecretName: &dataSecretName,
 						},
 						InfrastructureRef: v1.ObjectReference{
 							Kind:       "AWSManagedMachinePool",
 							APIVersion: "infrastructure.cluster.x-k8s.io/v1beta2",
-							Namespace:  *namespace,
+							Namespace:  *ac.namespace,
 							Name:       nodegroupName,
 						},
 					},
@@ -167,24 +167,24 @@ func (f *Function) CreateAWSNodegroupSpec(cluster, namespace, region, providerCo
 		}
 
 		var awsobject, mpobject *unstructured.Unstructured
-		if awsobject, err = composite.ToUnstructuredKubernetesObject(awsmmp, f.composite.Spec.ClusterProviderConfigRef); err != nil {
-			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *cluster), "error was", err)
+		if awsobject, err = composite.ToUnstructuredKubernetesObject(awsmmp, ac.composite.Spec.ClusterProviderConfigRef); err != nil {
+			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *ac.cluster), "error was", err)
 			continue
 		}
 
 		f.log.Info("Adding nodegroup to required resources", "nodegroup", nodegroupName)
-		if err = f.composed.AddDesired(nodegroupName, awsobject); err != nil {
+		if err = ac.composed.AddDesired(nodegroupName, awsobject); err != nil {
 			f.log.Info(composedName, "add machinepool", errors.Wrap(err, "cannot add composed object "+nodegroupName))
 			continue
 		}
 
-		if mpobject, err = composite.ToUnstructuredKubernetesObject(machinepool, f.composite.Spec.ClusterProviderConfigRef); err != nil {
-			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *cluster), "error was", err)
+		if mpobject, err = composite.ToUnstructuredKubernetesObject(machinepool, ac.composite.Spec.ClusterProviderConfigRef); err != nil {
+			f.log.Debug(fmt.Sprintf("failed to convert nodegroup %q to kubernetes object for cluster %q.", nodegroup, *ac.cluster), "error was", err)
 			continue
 		}
 
 		f.log.Info("Adding machinepool to required resources", "machinepool", nodegroupName)
-		if err = f.composed.AddDesired(nodegroupName+"-mp", mpobject); err != nil {
+		if err = ac.composed.AddDesired(nodegroupName+"-mp", mpobject); err != nil {
 			f.log.Info(composedName, "add machinepool", errors.Wrap(err, "cannot add composed object "+nodegroupName))
 			continue
 		}
@@ -218,7 +218,7 @@ func (f *Function) nodegroupToCapiObject(group *types.Nodegroup, ec2client *ec2.
 		}
 	}
 
-	pool.AMIVersion = group.Version
+	// pool.AMIVersion = group.Version
 
 	pool.AvailabilityZones = autoscaling.AvailabilityZones
 

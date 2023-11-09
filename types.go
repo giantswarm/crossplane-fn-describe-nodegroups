@@ -54,10 +54,15 @@ type XRStatus struct {
 	AWSRoleArn string `json:"roleArn"`
 }
 
+type awsconfig struct {
+	cluster, namespace, region, providerConfigRef *string
+	labels, annotations                           map[string]string
+	composed                                      *composite.Composition
+	composite                                     EksImportXRObject
+}
+
 // Function returns whatever response you ask it to.
 type Function struct {
 	fnv1beta1.UnimplementedFunctionRunnerServiceServer
-	log       logging.Logger
-	composed  *composite.Composition
-	composite EksImportXRObject
+	log logging.Logger
 }

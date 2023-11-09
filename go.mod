@@ -13,7 +13,7 @@ require (
 	github.com/crossplane/crossplane-runtime v1.14.0-rc.1
 	github.com/crossplane/function-sdk-go v0.0.0-20231027134439-0745c2a72577
 	github.com/crossplane/function-template-go v0.0.0-20230930023403-40dc198e7a6c
-	github.com/giantswarm/xfnlib v0.0.0-20231101162043-510e773708f8
+	github.com/giantswarm/xfnlib v0.0.0-20231109102154-99e33378d85b
 	github.com/google/go-cmp v0.6.0
 	google.golang.org/protobuf v1.31.0
 	k8s.io/api v0.28.3
