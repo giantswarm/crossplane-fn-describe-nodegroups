@@ -14,7 +14,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/eks v1.33.0
 	github.com/crossplane/crossplane-runtime v1.14.1
 	github.com/crossplane/function-sdk-go v0.1.0
-	github.com/crossplane/function-template-go v0.0.0-20231103045028-a3edeff0786a
 	github.com/giantswarm/xfnlib v0.0.0-20231110142547-abbdeafe54cf
 	github.com/google/go-cmp v0.6.0
 	google.golang.org/protobuf v1.31.0
