@@ -52,6 +52,8 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 	for k, v := range ac.composite.Spec.KubernetesAdditionalLabels {
 		ac.labels[k] = v
 	}
+	ac.labels["cluster.x-k8s.io/cluster-name"] = *ac.cluster
+	ac.labels["giantswarm.io/cluster"] = *ac.cluster
 
 	var provider string = ac.composite.Spec.CompositionSelector.MatchLabels.Provider
 	f.log.Info(provider)

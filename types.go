@@ -39,6 +39,7 @@ type XRSpec struct {
 	ClusterProviderConfigRef   string            `json:"clusterProviderConfigRef"`
 	Region                     string            `json:"regionOrLocation"`
 	ResourceGroupName          string            `json:"resourceGroupName,omitempty"`
+	ObjectDeletionPolicy       string            `json:"objectDeletionPolicy,omitempty"`
 	ClaimRef                   struct {
 		Namespace string `json:"namespace"`
 	} `json:"claimRef"`
