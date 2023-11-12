@@ -7,8 +7,9 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
 	fnv1beta1 "github.com/crossplane/function-sdk-go/proto/v1beta1"
 	"github.com/crossplane/function-sdk-go/response"
-	"github.com/giantswarm/crossplane-fn-describe-nodegroups/pkg/input/v1beta1"
 	"github.com/giantswarm/xfnlib/pkg/composite"
+
+	"github.com/giantswarm/crossplane-fn-describe-nodegroups/pkg/input/v1beta1"
 )
 
 const composedName = "crossplane-fn-describe-nodegroups"

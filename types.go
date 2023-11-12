@@ -3,9 +3,11 @@ package main
 import (
 	"github.com/crossplane/crossplane-runtime/pkg/logging"
 	fnv1beta1 "github.com/crossplane/function-sdk-go/proto/v1beta1"
-	xfc "github.com/giantswarm/crossplane-fn-describe-nodegroups/pkg/composite/v1beta1"
+
 	"github.com/giantswarm/xfnlib/pkg/composite"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	xfc "github.com/giantswarm/crossplane-fn-describe-nodegroups/pkg/composite/v1beta1"
 )
 
 // Policy Policies for referencing.
