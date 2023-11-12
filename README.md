@@ -60,6 +60,24 @@ TBD
 
 TBD
 
+## Building
+
+```shell
+# Run code generation - see input/generate.go
+$ go generate ./...
+
+# Lint the code
+$ docker run --rm -v $(pwd):/app -v ~/.cache/golangci-lint/v1.54.2:/root/.cache -w /app golangci/golangci-lint:v1.54.2 golangci-lint run
+
+# testing
+$ go test ./... -coverprofile=cover.out && go tool cover -html=cover.out
+?       github.com/giantswarm/crossplane-fn-describe-nodegroups/pkg/composite/v1beta1   [no test files]
+?       github.com/giantswarm/crossplane-fn-describe-nodegroups/pkg/input/v1beta1       [no test files]
+ok      github.com/giantswarm/crossplane-fn-describe-nodegroups 0.022s  coverage: 69.9% of statements
+
+$ docker buildx build .
+```
+
 ## Known Issues
 
 [Crossplane]: https://crossplane.io
