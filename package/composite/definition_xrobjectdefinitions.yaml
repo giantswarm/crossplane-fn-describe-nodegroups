@@ -71,6 +71,8 @@ spec:
                 description: Defines the region or location for cloud resources
                 type: string
               resourceGroupName:
+                description: AZURE ONLY The name of the resource group that the cluster
+                  is located in This has no effect if set for Google cloud or AWS
                 type: string
             required:
             - cloudProviderConfigRef

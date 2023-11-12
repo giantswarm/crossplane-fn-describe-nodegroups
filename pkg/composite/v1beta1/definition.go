@@ -1,12 +1,10 @@
 // Package v1beta1 contains the definition of the XR requirements for using this function
-// +kubebuilder:object:generate=true
 // +groupName=definition
 // +versionName=v1beta1
 package v1beta1
 
 import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-// +kubebuilder:object:root=false
 // +kubebuilder:storageversion
 // +kubebuilder:resource:categories=crossplane;composition;functions;subnets
 
