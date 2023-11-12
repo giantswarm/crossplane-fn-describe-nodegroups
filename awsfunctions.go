@@ -52,6 +52,7 @@ func (f *Function) CreateAWSNodegroupSpec(ac *XrConfig) (err error) {
 	}
 
 	for _, nodegroup := range res.Nodegroups {
+		nodegroup := nodegroup
 		nodegroupInput := &eks.DescribeNodegroupInput{
 			ClusterName:   ac.cluster,
 			NodegroupName: &nodegroup,
