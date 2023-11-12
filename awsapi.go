@@ -12,10 +12,6 @@ import (
 
 // EC2API Describes the functions required to access data on the AWS EC2 api
 type AwsEc2Api interface {
-	DescribeLaunchTemplates(ctx context.Context,
-		params *ec2.DescribeLaunchTemplatesInput,
-		optFns ...func(*ec2.Options)) (*ec2.DescribeLaunchTemplatesOutput, error)
-
 	DescribeLaunchTemplateVersions(ctx context.Context,
 		params *ec2.DescribeLaunchTemplateVersionsInput,
 		optFns ...func(*ec2.Options)) (*ec2.DescribeLaunchTemplateVersionsOutput, error)
@@ -24,11 +20,6 @@ type AwsEc2Api interface {
 // DescribeLaunchTemplateVersions Get the EC2 Launch template versions for a given launch template
 func DescribeLaunchTemplateVersions(c context.Context, api AwsEc2Api, input *ec2.DescribeLaunchTemplateVersionsInput) (*ec2.DescribeLaunchTemplateVersionsOutput, error) {
 	return api.DescribeLaunchTemplateVersions(c, input)
-}
-
-// DescribeLaunchTemplates Find launch templates for a given nodegroup
-func DescribeLaunchTemplates(c context.Context, api AwsEc2Api, input *ec2.DescribeLaunchTemplatesInput) (*ec2.DescribeLaunchTemplatesOutput, error) {
-	return api.DescribeLaunchTemplates(c, input)
 }
 
 // EKSNodegroupAPI describes the AWS functions required by this composition function
