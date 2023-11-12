@@ -52,6 +52,12 @@ closed off.
 
 - It is not possible to change the instance size when using launch templates
 
+To better understand what the function is doing, the following callgraph
+highlights the general flow the function follows to obtain the relevant
+information for building the CAPI objects.
+
+![run-function-callgraph.png](docs/run-function-callgraph.png)
+
 ### Azure provider
 
 TBD
