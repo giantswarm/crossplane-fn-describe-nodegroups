@@ -7,7 +7,7 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
 	fnv1beta1 "github.com/crossplane/function-sdk-go/proto/v1beta1"
 	"github.com/crossplane/function-sdk-go/response"
-	"github.com/giantswarm/crossplane-fn-describe-nodegroups/input/v1beta1"
+	"github.com/giantswarm/crossplane-fn-describe-nodegroups/pkg/input/v1beta1"
 	"github.com/giantswarm/xfnlib/pkg/composite"
 )
 
@@ -20,7 +20,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 	rsp = response.To(req, response.DefaultTTL)
 
 	var (
-		ac    awsconfig = awsconfig{}
+		ac    XrConfig = XrConfig{}
 		input v1beta1.Input
 	)
 	if ac.composed, err = composite.New(req, &input, &ac.composite); err != nil {
@@ -28,14 +28,13 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 		return rsp, nil
 	}
 
-	f.log.Info("input spec", "input", input)
 	if input.Spec == nil {
-		response.Normal(rsp, "Waiting for spec")
+		response.Fatal(rsp, &composite.MissingSpec{})
 		return rsp, nil
 	}
 
 	if _, ok := ac.composed.ObservedComposed[input.Spec.ClusterRef]; !ok {
-		response.Normal(rsp, "Waiting for resource")
+		response.Normal(rsp, "waiting for resource")
 		return rsp, nil
 	}
 
@@ -44,11 +43,10 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 	ac.region = &ac.composite.Spec.Region
 	ac.providerConfigRef = &ac.composite.Spec.CloudProviderConfigRef
 
-	ac.annotations = map[string]string{
-		"cluster.x-k8s.io/managed-by": "crossplane",
-	}
 	ac.labels = ac.composite.Metadata.Labels
-	// Merge in the additional labels for kubernetes resources
+	if ac.labels == nil {
+		ac.labels = make(map[string]string)
+	}
 	for k, v := range ac.composite.Spec.KubernetesAdditionalLabels {
 		ac.labels[k] = v
 	}
@@ -56,18 +54,19 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequ
 	ac.labels["giantswarm.io/cluster"] = *ac.cluster
 
 	var provider string = ac.composite.Spec.CompositionSelector.MatchLabels.Provider
-	f.log.Info(provider)
-	switch strings.ToLower(provider) {
-	case "aws":
-		f.log.Info("discovered aws provider", composedName, req.GetMeta().GetTag())
-		if err = f.CreateAWSNodegroupSpec(&ac); err != nil {
-			response.Fatal(rsp, errors.Wrapf(err, "cannot get desired composite resources from %T", req))
-			return rsp, nil
+	{
+		switch strings.ToLower(provider) {
+		case "aws":
+			f.log.Info("discovered aws provider", composedName, req.GetMeta().GetTag())
+			if err = f.CreateAWSNodegroupSpec(&ac); err != nil {
+				response.Fatal(rsp, errors.Wrapf(err, "cannot create composed resources from %T", req))
+				return rsp, nil
+			}
+		case "azure":
+			f.log.Info("Azure provider is not yet implemented")
+		case "gcp":
+			f.log.Info("GCP provider is not yet implemented")
 		}
-	case "azure":
-		f.log.Info("Azure provider is not yet implemented")
-	case "gcp":
-		f.log.Info("GCP provider is not yet implemented")
 	}
 
 	if err = ac.composed.ToResponse(rsp); err != nil {
