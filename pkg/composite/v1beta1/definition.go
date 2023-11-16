@@ -1,5 +1,5 @@
 // Package v1beta1 contains the definition of the XR requirements for using this function
-// +groupName=definition
+// +groupName=xr.describenodegroups.fn.giantswarm.io
 // +versionName=v1beta1
 package v1beta1
 
