@@ -47,11 +47,6 @@ attempt to use that to build the specification for Cluster API. If no launch
 template is found then the function tries to provide all required information
 to Cluster Api so that it can formulate the nodepool(s).
 
-When a launch template is discovered, certain pathways for ClusterAPI are 
-closed off.
-
-- It is not possible to change the instance size when using launch templates
-
 To better understand what the function is doing, the following callgraph
 highlights the general flow the function follows to obtain the relevant
 information for building the CAPI objects.
