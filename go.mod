@@ -4,7 +4,7 @@ go 1.21
 
 toolchain go1.21.1
 
-replace k8s.io/client-go => k8s.io/client-go v0.28.3
+replace k8s.io/client-go => k8s.io/client-go v0.29.0
 
 require (
 	github.com/alecthomas/kong v0.8.1
@@ -17,8 +17,8 @@ require (
 	github.com/giantswarm/xfnlib v0.0.0-20231110142547-abbdeafe54cf
 	github.com/google/go-cmp v0.6.0
 	google.golang.org/protobuf v1.31.0
-	k8s.io/api v0.28.3
-	k8s.io/apimachinery v0.28.3
+	k8s.io/api v0.29.0
+	k8s.io/apimachinery v0.29.0
 	sigs.k8s.io/cluster-api v1.5.3
 	sigs.k8s.io/cluster-api-provider-aws/v2 v2.2.4
 	sigs.k8s.io/controller-runtime v0.16.3
