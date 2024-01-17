@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@4.34.1
+  architect: giantswarm/architect@5.0.0
 
 workflows:
   build-workflow:
@@ -26,21 +26,23 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Push to docker"
+          name: "Push to gsoci"
           command: |
-            echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+            REGISTRY_SERVER=gsoci.azurecr.io
+            REGISTRY=${REGISTRY_SERVER}/giantswarm
+            echo "$ACR_GSOCI_PASSWORD" | docker login --username $ACR_GSOCI_USERNAME --password-stdin ${REGISTRY_SERVER}
             [ -z "${CIRCLE_TAG}" ] && CIRCLE_TAG=v0.0.1-dev
 
             curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
 
-            docker buildx build . -t docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+            docker buildx build . -t ${REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
 
-            echo "triggering : ./crossplane xpkg build -f package --embed-runtime-image=docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
-            ./crossplane xpkg build -f package --embed-runtime-image=docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+            echo "triggering : ./crossplane xpkg build -f package --embed-runtime-image=${REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
+            ./crossplane xpkg build -f package --embed-runtime-image=${REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
 
             cd package
             ls
-            echo "triggering : ./crossplane xpkg push docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
-            ../crossplane xpkg push docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+            echo "triggering : ./crossplane xpkg push ${REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
+            ../crossplane xpkg push ${REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
 
-            echo "Pushed to docker.io/giantswarm/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
+            echo "Pushed to ${REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}"
