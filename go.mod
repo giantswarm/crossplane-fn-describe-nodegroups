@@ -20,7 +20,7 @@ require (
 	k8s.io/api v0.29.1
 	k8s.io/apimachinery v0.29.1
 	sigs.k8s.io/cluster-api v1.5.3
-	sigs.k8s.io/cluster-api-provider-aws/v2 v2.2.4
+	sigs.k8s.io/cluster-api-provider-aws/v2 v2.3.1
 	sigs.k8s.io/controller-runtime v0.16.3
 	sigs.k8s.io/controller-tools v0.13.0
 )
@@ -78,8 +78,8 @@ require (
 	github.com/prometheus/common v0.45.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/spf13/afero v1.10.0 // indirect
-	github.com/spf13/cobra v1.7.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/cobra v1.8.0 // indirect
+	github.com/spf13/pflag v1.0.6-0.20210604193023-d5e0c0615ace // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
