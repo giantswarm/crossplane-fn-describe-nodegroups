@@ -137,6 +137,8 @@ github.com/fsnotify/fsnotify v1.7.0 h1:8JEhPFa5W2WU7YfeZzPNqzMP6Lwt7L2715Ggo0nos
 github.com/fsnotify/fsnotify v1.7.0/go.mod h1:40Bi/Hjc2AVfZrqy+aj+yEI+/bRxZnMJyTJwOpGvigM=
 github.com/giantswarm/xfnlib v0.0.0-20231110142547-abbdeafe54cf h1:8lHHFKSxEF+xcMJFY8QYaptyfWjA1GlaQOAZptip714=
 github.com/giantswarm/xfnlib v0.0.0-20231110142547-abbdeafe54cf/go.mod h1:JliA7y2iygDQPpaU1f3wzqi5q3KP5bWKjVQpt0+D/z4=
+github.com/giantswarm/xfnlib v0.0.0-20231113084629-05c87f141449 h1:GkkSc7eCfmBvnGhEbN19IfMVZhawH7jnzimkK5uVwVs=
+github.com/giantswarm/xfnlib v0.0.0-20231113084629-05c87f141449/go.mod h1:JliA7y2iygDQPpaU1f3wzqi5q3KP5bWKjVQpt0+D/z4=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
