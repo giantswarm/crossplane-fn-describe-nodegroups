@@ -12,7 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/autoscaling v1.34.1
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.131.0
 	github.com/aws/aws-sdk-go-v2/service/eks v1.33.0
-	github.com/crossplane/crossplane-runtime v1.14.1
+	github.com/crossplane/crossplane-runtime v1.14.3
 	github.com/crossplane/function-sdk-go v0.1.0
 	github.com/giantswarm/xfnlib v0.0.0-20231110142547-abbdeafe54cf
 	github.com/google/go-cmp v0.6.0
