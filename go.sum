@@ -59,8 +59,12 @@ github.com/cespare/xxhash/v2 v2.2.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XL
 github.com/cpuguy83/go-md2man/v2 v2.0.3/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/crossplane/crossplane-runtime v1.14.3 h1:YNGALph/UJTtQO+cJ9KGQ5NfALI5453PeE93Aqy9SWg=
 github.com/crossplane/crossplane-runtime v1.14.3/go.mod h1:aOP+5W2wKpvthVs3pFNbVOe1jwrKYbJho0ThGNCVz9o=
+github.com/crossplane/crossplane-runtime v1.15.0-rc.0.0.20231215091746-d23a82b3a2f5 h1:B2EyxQYejCX1zp+7tUmuT6fTDUGB0k9LJUWvJ72NT1w=
+github.com/crossplane/crossplane-runtime v1.15.0-rc.0.0.20231215091746-d23a82b3a2f5/go.mod h1:pgt7PaTvvOQz3jILyxbCaeleU9MrAqKaNoPJavhGBgM=
 github.com/crossplane/function-sdk-go v0.1.0 h1:WN3CUSaj6wgDqQPZZP1whMVIkTAZtN3HVCS67pTMzd8=
 github.com/crossplane/function-sdk-go v0.1.0/go.mod h1:oRqHZ6RufpfZJ1N8aT4EfkP+5KpkhOKpWz7SeUDwwcw=
+github.com/crossplane/function-sdk-go v0.2.0 h1:4r+dXeGgwOC2XehJlHsHlkdkUsGW8PzkiyPPd2cshQs=
+github.com/crossplane/function-sdk-go v0.2.0/go.mod h1:AvaWMHeKvzzE0vODLBrU5njOzW6sm61Ou4js9OdBUXM=
 github.com/crossplane/upjet v0.11.0-rc.0.0.20231012093706-c4a76d2a7505 h1:eCmYgfRopVn6r8RM1Ra4XQAPwVsjTGfktBj2Dk7yy+Y=
 github.com/crossplane/upjet v0.11.0-rc.0.0.20231012093706-c4a76d2a7505/go.mod h1:Ov+eoYS2n0Zge/E50zm65meOTYbAHnU6jPt27fQrpbc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
