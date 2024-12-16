@@ -13,7 +13,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.145.0
 	github.com/aws/aws-sdk-go-v2/service/eks v1.37.1
 	github.com/crossplane/crossplane-runtime v1.14.3
-	github.com/crossplane/function-sdk-go v0.1.0
+	github.com/crossplane/function-sdk-go v0.4.0
 	github.com/giantswarm/xfnlib v0.0.0-20231113084629-05c87f141449
 	github.com/google/go-cmp v0.6.0
 	google.golang.org/protobuf v1.32.0
