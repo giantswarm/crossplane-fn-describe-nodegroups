@@ -19,7 +19,7 @@ require (
 	google.golang.org/protobuf v1.32.0
 	k8s.io/api v0.29.1
 	k8s.io/apimachinery v0.29.1
-	sigs.k8s.io/cluster-api v1.6.1
+	sigs.k8s.io/cluster-api v1.10.2
 	sigs.k8s.io/cluster-api-provider-aws/v2 v2.3.1
 	sigs.k8s.io/controller-runtime v0.17.0
 	sigs.k8s.io/controller-tools v0.13.0
