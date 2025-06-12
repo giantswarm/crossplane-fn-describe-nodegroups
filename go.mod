@@ -8,10 +8,10 @@ replace k8s.io/client-go => k8s.io/client-go v0.29.1
 
 require (
 	github.com/alecthomas/kong v0.8.1
-	github.com/aws/aws-sdk-go-v2 v1.24.1
-	github.com/aws/aws-sdk-go-v2/service/autoscaling v1.36.7
-	github.com/aws/aws-sdk-go-v2/service/ec2 v1.145.0
-	github.com/aws/aws-sdk-go-v2/service/eks v1.37.1
+	github.com/aws/aws-sdk-go-v2 v1.36.4
+	github.com/aws/aws-sdk-go-v2/service/autoscaling v1.53.2
+	github.com/aws/aws-sdk-go-v2/service/ec2 v1.225.1
+	github.com/aws/aws-sdk-go-v2/service/eks v1.66.0
 	github.com/crossplane/crossplane-runtime v1.14.3
 	github.com/crossplane/function-sdk-go v0.1.0
 	github.com/giantswarm/xfnlib v0.0.0-20231113084629-05c87f141449
