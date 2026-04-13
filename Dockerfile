@@ -2,7 +2,7 @@
 
 # We use Go 1.25 to match the go.mod requirements.
 # The GitHub Actions CI job sets this argument for a consistent Go version.
-ARG GO_VERSION=1.25
+ARG GO_VERSION=1.26
 
 # Setup the base environment. The BUILDPLATFORM is set automatically by Docker.
 # The --platform=${BUILDPLATFORM} flag tells Docker to build the function using
