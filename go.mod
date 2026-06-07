@@ -2,7 +2,7 @@ module github.com/giantswarm/crossplane-fn-describe-nodegroups
 
 go 1.25
 
-toolchain go1.26.2
+toolchain go1.26.4
 
 replace k8s.io/client-go => k8s.io/client-go v0.29.1
 
